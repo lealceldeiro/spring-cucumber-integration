@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class HelloController {
     private final HelloService helloService;
+    private final ServiceTo3rdParty serviceTo3rdParty;
 
-    public HelloController(HelloService helloService) {
+    public HelloController(HelloService helloService, ServiceTo3rdParty serviceTo3rdParty) {
         this.helloService = helloService;
+        this.serviceTo3rdParty = serviceTo3rdParty;
     }
 
     @PostMapping("name")
@@ -22,6 +24,9 @@ public class HelloController {
 
     @GetMapping("salute")
     public String salute() {
+        System.out.println("Calling ServiceTo3rdParty: " + serviceTo3rdParty.callExternal());
+        System.out.println("Calling again ServiceTo3rdParty: " + serviceTo3rdParty.callExternal());
+
         String name = helloService.getName();
         if (name == null) {
             return "There is no one to greet";
