@@ -16,7 +16,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest request) {
         Map<String, String> body = new HashMap<>();
-        body.put("error", exception.getMessage());
+        body.put("message", exception.getMessage());
 
         return handleExceptionInternal(exception, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }

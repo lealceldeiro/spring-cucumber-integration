@@ -1,12 +1,16 @@
 package com.example.hello;
 
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,10 +33,13 @@ public class HelloController {
     }
 
     @GetMapping("salute")
-    public String salute(@Param("name") String name) {
+    public ResponseEntity<Map<String, String>> salute(@Param("name") String name) {
         logger.log(Level.INFO, "Calling ServiceTo3rdParty: {}", serviceTo3rdParty.callExternal());
         logger.log(Level.INFO, "Calling again ServiceTo3rdParty: {}", serviceTo3rdParty.callExternal());
 
-        return helloService.salute(name);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", helloService.salute(name));
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

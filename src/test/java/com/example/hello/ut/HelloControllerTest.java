@@ -4,7 +4,7 @@ import com.example.hello.HelloApplication;
 import com.example.hello.HelloService;
 import com.example.hello.Payload;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -65,14 +66,14 @@ public class HelloControllerTest {
 
     @Test
     public void hello() throws Exception {
-        String response = mockMvc.perform(get("/salute").contentType(APPLICATION_JSON_UTF8)
-                                                        .param("name", expectedGreeting))
-                                 .andExpect(status().isOk())
-                                 .andReturn()
-                                 .getResponse()
-                                 .getContentAsString();
+        mockMvc.perform(get("/salute").contentType(APPLICATION_JSON_UTF8)
+                                      .param("name", expectedGreeting))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.message", Is.is(expectedGreeting)))
+               .andReturn()
+               .getResponse();
+
 
         verify(helloService, times(1)).salute(anyString());
-        Assert.assertEquals(expectedGreeting, response);
     }
 }

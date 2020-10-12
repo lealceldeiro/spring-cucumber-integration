@@ -1,7 +1,9 @@
 package com.example.hello.cucumber;
 
+import com.example.hello.HelloEntityRepository;
 import com.example.hello.ServiceTo3rdParty;
 import com.example.hello.cucumber.handler.MockMvcHandler;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -11,11 +13,14 @@ import org.mockito.Mockito;
 
 public class GreetingStepsDefinition {
     private final MockMvcHandler mockMvcHandler;
-    private ServiceTo3rdParty serviceTo3rdPartyMock;
+    private final ServiceTo3rdParty serviceTo3rdPartyMock;
+    private final HelloEntityRepository repository;
 
-    public GreetingStepsDefinition(MockMvcHandler mockMvcHandler, ServiceTo3rdParty serviceTo3rdPartyMock) {
+    public GreetingStepsDefinition(MockMvcHandler mockMvcHandler, ServiceTo3rdParty serviceTo3rdPartyMock,
+                                   HelloEntityRepository repository) {
         this.mockMvcHandler = mockMvcHandler;
         this.serviceTo3rdPartyMock = serviceTo3rdPartyMock;
+        this.repository = repository;
     }
 
     @Before
@@ -23,14 +28,19 @@ public class GreetingStepsDefinition {
         Mockito.when(serviceTo3rdPartyMock.callExternal()).thenReturn("Mocked value");
     }
 
-    @Given("{string} is to be greeted")
+    @After
+    public void reset() {
+        repository.deleteAll();
+    }
+
+    @Given("{string} was set to be greeted")
     public void aNameIsToBeGreeted(String name) throws Exception {
         mockMvcHandler.sayName(name);
     }
 
-    @When("There is a greeting")
-    public void thereIsAGreeting() throws Exception {
-        mockMvcHandler.sayHello();
+    @When("{string} is asked to be greeted")
+    public void thereIsAGreeting(String name) throws Exception {
+        mockMvcHandler.sayHello(name);
     }
 
     @Then("{string} should be said")

@@ -1,7 +1,9 @@
 package com.example.hello;
 
-public class NotFoundException extends RuntimeException {
-    public NotFoundException(String message) {
-        super("Entity Not found: " + message);
+class NotFoundException extends RuntimeException {
+    private static final long serialVersionUID = 7839872909036678944L;
+
+    NotFoundException(String message) {
+        super(message);
     }
 }

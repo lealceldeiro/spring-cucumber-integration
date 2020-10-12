@@ -2,6 +2,7 @@ package com.example.hello.cucumber.handler;
 
 import com.example.hello.Payload;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -31,16 +32,14 @@ public class MockMvcHandler {
     public void sayName(String name) throws Exception {
         String payload = objectMapper.writeValueAsString(new Payload(name));
 
-        mockMvc
-                .perform(post("/name").contentType(MediaType.APPLICATION_JSON_UTF8).content(payload))
-                .andExpect(status().isOk());
+        mockMvc.perform(post("/name").contentType(MediaType.APPLICATION_JSON_UTF8).content(payload))
+               .andExpect(status().isOk());
     }
 
-    public void sayHello() throws Exception {
-        greeting = mockMvc
-                .perform(get("/salute"))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+    public void sayHello(String name) throws Exception {
+        String response = mockMvc.perform(get("/salute").param("name", name))
+                                 .andReturn().getResponse().getContentAsString();
+        greeting = JsonPath.parse(response).read("$.message");
     }
 
     public String returnedGreeting() {

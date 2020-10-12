@@ -1,11 +1,11 @@
 Feature: Greeting
 
   Scenario: A specified name is greeted
-    Given "John" is to be greeted
-    When There is a greeting
-    Then "Hello, John" should be said
+    Given "John" was set to be greeted
+    When "John" is asked to be greeted
+    Then "Hey, John" should be said
 
-  Scenario: It is informed there is no one to be greeted
-    Given There is no one to be greeted
-    When There is a greeting
-    Then "There is no one to greet" should be said
+  Scenario: It's informed there's no one with a given name to be greeted
+    Given "John" was set to be greeted
+    When "Julia" is asked to be greeted
+    Then "There is no name Julia" should be said
