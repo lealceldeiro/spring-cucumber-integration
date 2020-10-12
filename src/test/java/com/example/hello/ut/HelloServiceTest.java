@@ -20,8 +20,8 @@ public class HelloServiceTest {
     @Test
     public void setAndGetName() {
         final String expected = "Name-" + new SecureRandom().nextInt(137);
-        helloService.setName(expected);
+        helloService.nameIt(expected);
 
-        assertEquals(expected, helloService.getName());
+        assertEquals("Hey, " + expected, helloService.salute(expected));
     }
 }

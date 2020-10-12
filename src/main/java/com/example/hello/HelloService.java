@@ -4,13 +4,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HelloService {
-    private String name;
+    private final HelloEntityRepository repository;
 
-    public void setName(String name) {
-        this.name = name;
+    public HelloService(HelloEntityRepository repository) {
+        this.repository = repository;
     }
 
-    public String getName() {
-        return name;
+    public HelloEntity nameIt(String name) {
+        return repository.save(new HelloEntity(name));
+    }
+
+    public String salute(String name) {
+        String nameFound = repository.findByNameEquals(name)
+                                     .orElseThrow(() -> new NotFoundException("There is no name " + name))
+                                     .getName();
+
+        return "Hey, " + nameFound;
     }
 }

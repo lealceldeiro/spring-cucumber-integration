@@ -11,19 +11,22 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.security.SecureRandom;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = HelloApplication.class)
@@ -39,34 +42,37 @@ public class HelloControllerTest {
     private MockMvc mockMvc;
 
     private String expectedName;
+    private String expectedGreeting;
 
     @Before
     public void setUp() {
         expectedName = "SomeName-" + new SecureRandom().nextInt(111);
-        when(helloService.getName()).thenReturn(expectedName);
+        expectedGreeting = "Hello, " + expectedName;
+        when(helloService.salute(anyString())).thenReturn(expectedGreeting);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).alwaysDo(MockMvcResultHandlers.print()).build();
     }
 
     @Test
     public void salute() throws Exception {
-        mockMvc
-                .perform(post("/name")
-                                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                                 .content(objectMapper.writeValueAsString(new Payload(expectedName))))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(post("/name")
+                            .contentType(APPLICATION_JSON_UTF8)
+                            .content(objectMapper.writeValueAsString(new Payload(expectedName))))
+               .andExpect(status().isOk());
 
-        verify(helloService, times(1)).setName(expectedName);
+        verify(helloService, times(1)).nameIt(expectedName);
     }
 
     @Test
     public void hello() throws Exception {
-        String response = mockMvc
-                .perform(get("/salute").contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
+        String response = mockMvc.perform(get("/salute").contentType(APPLICATION_JSON_UTF8)
+                                                        .param("name", expectedGreeting))
+                                 .andExpect(status().isOk())
+                                 .andReturn()
+                                 .getResponse()
+                                 .getContentAsString();
 
-        verify(helloService, times(1)).getName();
-        Assert.assertEquals("Hello, " + expectedName, response);
+        verify(helloService, times(1)).salute(anyString());
+        Assert.assertEquals(expectedGreeting, response);
     }
 }
