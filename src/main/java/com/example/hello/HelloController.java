@@ -34,8 +34,8 @@ public class HelloController {
 
     @GetMapping("salute")
     public ResponseEntity<Map<String, String>> salute(@Param("name") String name) {
-        logger.log(Level.INFO, "Calling ServiceTo3rdParty: {}", serviceTo3rdParty.callExternal());
-        logger.log(Level.INFO, "Calling again ServiceTo3rdParty: {}", serviceTo3rdParty.callExternal());
+        logger.log(Level.INFO, "Calling ServiceTo3rdParty: {0}", serviceTo3rdParty.callExternal());
+        logger.log(Level.INFO, "Calling again ServiceTo3rdParty: {0}", serviceTo3rdParty.callExternal());
 
         Map<String, String> response = new HashMap<>();
         response.put("message", helloService.salute(name));
