@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceTo3rdParty {
+    private static final String RETURN_VALUE = "Value from 3rd party service";
+
     public String callExternal() {
-        return "Value from 3rd party service";
+        return RETURN_VALUE;
     }
 }

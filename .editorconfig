@@ -12,3 +12,8 @@ trim_trailing_whitespace = true
 
 [*.feature]
 indent_size = 2
+
+[*.java]
+ij_any_align_multiline_binary_operation = true
+ij_any_align_multiline_chained_methods = true
+ij_any_align_multiline_method_parentheses = true

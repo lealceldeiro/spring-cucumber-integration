@@ -69,10 +69,7 @@ public class HelloControllerTest {
         mockMvc.perform(get("/salute").contentType(APPLICATION_JSON_UTF8)
                                       .param("name", expectedGreeting))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.message", Is.is(expectedGreeting)))
-               .andReturn()
-               .getResponse();
-
+               .andExpect(jsonPath("$.message", Is.is(expectedGreeting)));
 
         verify(helloService, times(1)).salute(anyString());
     }
