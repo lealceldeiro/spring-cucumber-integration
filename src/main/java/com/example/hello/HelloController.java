@@ -36,6 +36,7 @@ public class HelloController {
     public ResponseEntity<Map<String, String>> salute(@Param("name") String name) {
         logger.log(Level.INFO, "Calling ServiceTo3rdParty: {0}", serviceTo3rdParty.callExternal());
         logger.log(Level.INFO, "Calling again ServiceTo3rdParty: {0}", serviceTo3rdParty.callExternal());
+        logger.log(Level.INFO, "Calling Static utility: {0}", StaticUtility.staticMethod());
 
         Map<String, String> response = new HashMap<>();
         response.put("message", helloService.salute(name));

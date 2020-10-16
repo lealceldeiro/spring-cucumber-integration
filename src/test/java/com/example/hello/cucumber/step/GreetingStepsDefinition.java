@@ -1,7 +1,8 @@
-package com.example.hello.cucumber;
+package com.example.hello.cucumber.step;
 
 import com.example.hello.HelloEntityRepository;
 import com.example.hello.ServiceTo3rdParty;
+import com.example.hello.StaticUtility;
 import com.example.hello.cucumber.handler.MockMvcHandler;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -10,11 +11,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 
 public class GreetingStepsDefinition {
     private final MockMvcHandler mockMvcHandler;
-    private final ServiceTo3rdParty serviceTo3rdPartyMock;
     private final HelloEntityRepository repository;
+
+    private final ServiceTo3rdParty serviceTo3rdPartyMock;
 
     public GreetingStepsDefinition(MockMvcHandler mockMvcHandler, ServiceTo3rdParty serviceTo3rdPartyMock,
                                    HelloEntityRepository repository) {
@@ -26,6 +29,9 @@ public class GreetingStepsDefinition {
     @Before
     public void setUp() {
         Mockito.when(serviceTo3rdPartyMock.callExternal()).thenReturn("Mocked value");
+
+        PowerMockito.mockStatic(StaticUtility.class);
+        Mockito.when(StaticUtility.staticMethod()).thenReturn("Mocked static value");
     }
 
     @After
